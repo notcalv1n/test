@@ -1,0 +1,28 @@
+ISLEARNING HYBRID AI SETUP (Windows)
+
+Behavior
+- Gemini remains the primary AI provider.
+- The backend tries the configured Gemini model and Gemini fallback models first.
+- If Gemini fails, including quota/rate-limit errors, the backend attempts local Ollama.
+- MySQL and the existing application routes/features are unchanged.
+- AI_PROVIDER_MODE=hybrid is the recommended setting. Use local to skip Gemini, or gemini to disable local fallback.
+
+Requirements
+1. Python version compatible with the project's backend dependencies.
+2. MySQL/XAMPP running, with backend/.env MySQL values correct.
+3. Install Ollama for Windows: https://ollama.com/download/windows
+4. Run backend/setup_local_ai.bat, or manually run: ollama pull qwen2.5:3b
+5. Set your own Gemini API key in backend/.env. The provided key field is intentionally a placeholder.
+6. Start the backend and frontend using the existing launch scripts. Keep Ollama running for fallback.
+
+Local fallback limitations
+- Local generation runs on the user's computer; speed and quality depend on RAM/CPU/GPU. qwen2.5:3b is a relatively small model and may produce less detailed output than Gemini.
+- Local fallback extracts text from TXT/MD/CSV/JSON/HTML/XML, text-based PDF, DOCX, PPTX, and XLSX. Scanned PDFs and image-only files require OCR and are not supported by this fallback by default.
+- To avoid silent truncation, source text over OLLAMA_MAX_SOURCE_CHARS fails with an actionable error. Increase the limit only if the model's context and available memory can handle it.
+- Ollama is contacted only through localhost by default; do not expose its API publicly without proper access controls.
+
+Verification performed in this delivery
+- Python syntax compilation.
+- ZIP archive integrity check.
+- Static inspection of hybrid routing and environment settings.
+Not verified here: a live Gemini API call, local Ollama inference, MySQL login/database behavior, or end-to-end browser testing. Those require the user's machine, API key, MySQL server, and downloaded model.
